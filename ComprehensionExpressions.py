@@ -52,7 +52,7 @@ def isprime(n): return (n > 1) and all(expr for expr in [n % i != 0 for i in ran
 
 comp = {i for i in range(1, n + 1) if any(i % j == 0 for j in range(2, max(2, int(sqrt(i)) + 1)))}
 comp2 = {j for i in range(2, int(sqrt(n)) + 1) for j in range(i * 2, n + 1, i)}
-comp3 = {i * j for i in range(2, int(sqrt(n)) + 1) for j in range(2, n // i + 1)}
+comp3 = {i * j for i in range(2, int(sqrt(n)) + 1) for j in range(2, n // i + 1) if i * j <= n}
 assert comp == comp2 == comp3, (comp ^ comp2, comp ^ comp3)
 
 # Character ranges
@@ -61,7 +61,11 @@ assert "".join(crange('A', 'Z')) == 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 assert next(crange("a", "b")) == "a"
 
 def charrange(*arg):
-    return (chr(c) for i in range(0, len(arg), 2) for c in range(ord(arg[i]), ord(arg[i + 1]) + 1))
+    while arg:
+        assert len(arg) >= 2
+        a, b, *arg = arg
+        yield from crange(a, b)
+
 assert "".join(charrange('A', 'Z', 'a', 'z', '0', '9')) == 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 assert "".join(charrange()) == ''
 assert next(charrange("a", "b")) == "a"
